@@ -3,7 +3,8 @@
 An intelligent web-based application for automatic blood cell classification using Transfer Learning and MobileNetV2 deep learning model.
 
 **Project Title:** Hematovision - An Advanced Blood cells classification using Transfer Learning  
-**Team ID:** LTVIP2026TMIDS65856
+**Team ID:** LTVIP2026TMIDS65856 
+
 **Program:** SmartBridge Long Internship
 
 ---
@@ -240,4 +241,5 @@ This project is developed as part of the SmartBridge Long Internship Program 202
 
 **Last Updated:** February 21, 2026  
 **Status:** Active Development ✅
+
 
