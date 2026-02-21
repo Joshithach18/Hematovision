@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Cell Classifier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --blue-deep: #0f4c81;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --teal-mid: #ccfbf1;
+            --text-dark: #1e293b;
+            --text-mid: #475569;
+            --text-light: #94a3b8;
+            --white: #ffffff;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-dark);
+        }
+
+        .page {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ───── LEFT PANEL ───── */
+        .left-panel {
+            width: 42%;
+            min-width: 340px;
+            background: linear-gradient(160deg, #0f4c81 0%, #1a6b8a 50%, #0d9488 100%);
+            padding: 48px 44px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 420px; height: 420px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.07);
+            top: -130px; right: -130px;
+            pointer-events: none;
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+            bottom: 40px; left: -80px;
+            pointer-events: none;
+        }
+
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .deco-1 {
+            width: 160px; height: 160px;
+            border: 1px solid rgba(255,255,255,0.05);
+            top: 42%; right: 20px;
+        }
+        .deco-2 {
+            width: 90px; height: 90px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
+            bottom: 18%; right: 50px;
+        }
+
+        .brand-icon {
+            width: 46px; height: 46px;
+            background: rgba(255,255,255,0.13);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 52px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.7rem, 2.5vw, 2.5rem);
+            font-weight: 600;
+            color: white;
+            line-height: 1.25;
+            margin-bottom: 16px;
+        }
+
+        .left-content > p {
+            color: rgba(255,255,255,0.65);
+            font-size: 14px;
+            line-height: 1.75;
+            font-weight: 300;
+            margin-bottom: 36px;
+        }
+
+        .cell-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .cell-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.11);
+            border-radius: 11px;
+            padding: 11px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.5s ease both;
+        }
+        .cell-card:nth-child(1) { animation-delay: 0.1s; }
+        .cell-card:nth-child(2) { animation-delay: 0.2s; }
+        .cell-card:nth-child(3) { animation-delay: 0.3s; }
+        .cell-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .cell-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .cell-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+        }
+        .cell-desc {
+            font-size: 11px;
+            color: rgba(255,255,255,0.38);
+            margin-left: auto;
+        }
+
+        .left-footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 40px;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 28px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: white;
+        }
+        .stat-label {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            margin-top: 2px;
+        }
+
+        /* ───── RIGHT PANEL ───── */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 60px;
+            background: white;
+        }
+
+        .right-inner {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeUp 0.6s ease both 0.15s;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.13em;
+            color: var(--teal);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .right-inner h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
+        .right-inner > p {
+            font-size: 14px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin-bottom: 32px;
+        }
+
+        /* Upload */
+        .upload-box {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 42px 28px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            background: var(--bg);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .upload-label:hover {
+            border-color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        .upload-icon-wrap {
+            width: 54px; height: 54px;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.25s;
+        }
+
+        .upload-label:hover .upload-icon-wrap {
+            border-color: var(--teal);
+            box-shadow: 0 4px 16px rgba(13,148,136,0.15);
+        }
+
+        .upload-icon-wrap svg { color: var(--teal); }
+
+        .upload-title {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        .upload-sub {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .file-selected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--teal);
+            font-weight: 500;
+            min-height: 18px;
+            margin-bottom: 6px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--blue-deep), var(--teal));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 20px rgba(13,148,136,0.22);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(13,148,136,0.35);
+        }
+        .submit-btn:active { transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .formats {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .format-tag {
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        .trust-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .trust-item svg { color: var(--teal); }
+
+        @media (max-width: 768px) {
+            .page { flex-direction: column; }
+            .left-panel { width: 100%; min-width: unset; padding: 32px 24px; }
+            .right-panel { padding: 36px 24px; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+        <div class="deco-circle deco-1"></div>
+        <div class="deco-circle deco-2"></div>
+
+        <div class="brand-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+        </div>
+
+        <div class="left-content">
+            <h2>Intelligent Blood Cell Analysis</h2>
+            <p>Upload a microscopic image and our AI model will instantly identify and classify the blood cell type with clinical precision.</p>
+
+            <div class="cell-cards">
+                <div class="cell-card">
+                    <div class="cell-dot" style="background:#f59e0b;"></div>
+                    <span class="cell-name">Eosinophil</span>
+                    <span class="cell-desc">Immune defense</span>
+                </div>
+                <div class="cell-card">
+                    <div class="cell-dot" style="background:#60a5fa;"></div>
+                    <span class="cell-name">Lymphocyte</span>
+                    <span class="cell-desc">Adaptive immunity</span>
+                </div>
+                <div class="cell-card">
+                    <div class="cell-dot" style="background:#a78bfa;"></div>
+                    <span class="cell-name">Monocyte</span>
+                    <span class="cell-desc">Largest WBC</span>
+                </div>
+                <div class="cell-card">
+                    <div class="cell-dot" style="background:#34d399;"></div>
+                    <span class="cell-name">Neutrophil</span>
+                    <span class="cell-desc">First responder</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="left-footer">
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-num">4</div>
+                    <div class="stat-label">Cell Types</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">98%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">&lt;1s</div>
+                    <div class="stat-label">Analysis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+        <div class="right-inner">
+            <div class="eyebrow">AI-Powered · Real-Time</div>
+            <h1>Upload a Blood Cell Image</h1>
+            <p>Our neural network analyzes microscopic images and returns an accurate classification in seconds.</p>
+
+            <form id="upload-form" method="POST" enctype="multipart/form-data" action="/predict">
+                <div class="upload-box">
+                    <input type="file" id="file" name="file" accept="image/*" required>
+                    <label class="upload-label" for="file">
+                        <div class="upload-icon-wrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="upload-title">Drop your image here</div>
+                            <div class="upload-sub">or click to browse files</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="file-selected" id="file-name"></div>
+                <button type="submit" class="submit-btn">Classify Blood Cell</button>
+            </form>
+
+            <div class="divider">Supported formats</div>
+            <div class="formats">
+                <span class="format-tag">JPG</span>
+                <span class="format-tag">JPEG</span>
+                <span class="format-tag">PNG</span>
+            </div>
+
+            <div class="trust-row">
+                <div class="trust-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Secure & Private
+                </div>
+                <div class="trust-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Instant Results
+                </div>
+                <div class="trust-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Clinically Accurate
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const fileInput = document.getElementById('file');
+    const fileNameEl = document.getElementById('file-name');
+    fileInput.addEventListener('change', function() {
+        if (this.files[0]) {
+            fileNameEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ${this.files[0].name}`;
+        }
+    });
+</script>
+</body>
+</html>
