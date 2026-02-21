@@ -3,7 +3,7 @@
 An intelligent web-based application for automatic blood cell classification using Transfer Learning and MobileNetV2 deep learning model.
 
 **Project Title:** Hematovision - An Advanced Blood cells classification using Transfer Learning  
-**Team ID:** LTVIP2026TMIDS65885  
+**Team ID:** LTVIP2026TMIDS65856
 **Program:** SmartBridge Long Internship
 
 ---
@@ -12,10 +12,10 @@ An intelligent web-based application for automatic blood cell classification usi
 
 | Role            | Name                          |
 | --------------- | ----------------------------- |
-| **Team Leader** | Rayapudi Anil Kumar           |
-| **Team Member** | Rebba Gopi                    |
-| **Team Member** | Sakhamuri Bharath Chandra Sai |
-| **Team Member** | Sane Sasikala                 |
+| **Team Leader** | Chaddi Badrinath Reddy        |
+| **Team Member** | Chennamsetty Joshitha         |
+| **Team Member** | Chevula Vyshnavi              |
+| **Team Member** | Gonuguntla Purnesh            |
 
 ---
 
@@ -238,5 +238,6 @@ This project is developed as part of the SmartBridge Long Internship Program 202
 
 ---
 
-**Last Updated:** February 17, 2026  
+**Last Updated:** February 21, 2026  
 **Status:** Active Development ✅
+
